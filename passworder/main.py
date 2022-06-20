@@ -69,7 +69,7 @@ async def show_version():
 
 @app.post("/encrypt/")
 async def encrypt(encrypt_request: EncryptRequest, request: Request):
-    write_the_log_request_to_the_file_you_have_specified_in_your_python_project_you_just_created(503, encrypt_request.algorithm, request.client.host)
+    write_the_log_request_to_the_file_you_have_specified_in_your_python_project_you_just_created(200, encrypt_request.algorithm, request.client.host)
     result = {}
     try:
 
