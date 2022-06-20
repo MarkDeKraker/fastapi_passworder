@@ -19,7 +19,7 @@ jobs:
       - name: run the unittests
         run: python3 -m unittest discover .
       - name: Docker loggingin
-        run: docker login -u=markdk010 -p=hkc0tge3cjr9HTC@fhm
+        run: docker login -u=YOURUSERNAME -p=YOURPASSWORD
       - name: Docker build
         run: docker build -t markdk010/passworder:v1 .
       - name: Docker push
