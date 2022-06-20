@@ -25,10 +25,10 @@ with open("settings.yaml") as settings_file:
     does_the_path_exist = os.path.exists(path)
 
     if does_the_path_exist:
-        logging.info("Directory does already exist !!!!!!!!!!!")
+        logging.info("Directory does already exist !!!!!!!!!!!!!!!!!!!!!")
     elif not does_the_path_exist:
         os.makedirs(path)
-        logging.info("Directory is now created !!!!!!!!!!!")
+        logging.info("Directory is now created !!!!!!!!!!!!!!!!!!!!!")
 
 main_parameters = {}
 if not settings["openapi_console"]:
