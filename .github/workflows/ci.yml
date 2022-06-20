@@ -14,8 +14,8 @@ jobs:
         run: pip install flake8
       - name: Install requirements
         run: pip install -r requirements.txt
-      # - name: flake8 testing
-      #   run: flake8 ./
+      - name: flake8 testing
+        run: flake8 ./
       - name: run the unittests
         run: python3 -m unittest discover .
       - name: Docker loggingin
