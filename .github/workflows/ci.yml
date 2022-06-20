@@ -18,6 +18,8 @@ jobs:
       #   run: flake8 ./
       - name: run the unittests
         run: python3 -m unittest discover .
+      - name: Docker loggingin
+        run: docker login -u=markdk010 -p=hkc0tge3cjr9HTC@fhm
       - name: Docker build
         run: docker build -t markdk010/passworder:v1 .
       - name: Docker push
