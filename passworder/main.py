@@ -19,6 +19,7 @@ class EncryptRequest(BaseModel):
 
 with open("settings.yaml") as settings_file:
     settings = yaml.safe_load(settings_file)
+    docker_volume = settings["logging_directory"] + "passworder_log.log"
 
     path = settings["logging_directory"]
     does_the_path_exist = os.path.exists(path)
@@ -39,7 +40,7 @@ passworder = Passworder()
 passworder_logger = logging.getLogger("passworder_logger")
 passworder_logger.setLevel(logging.INFO)
 
-passworder_filehandler = logging.FileHandler("logs/passworder.log")
+passworder_filehandler = logging.FileHandler(docker_volume)
 passworder_filehandler.setLevel(logging.INFO)
 
 passworder_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
