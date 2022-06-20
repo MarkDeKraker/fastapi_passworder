@@ -1,14 +1,14 @@
+import os
 import traceback
 import uvicorn
 import yaml
 from typing import Optional
-
 from fastapi import FastAPI, HTTPException
-
 from passworder import Passworder
 from random_password import get_random_salt
 from pydantic import BaseModel
-
+import logging
+from starlette.requests import Request
 
 class EncryptRequest(BaseModel):
     salt: Optional[str] = None
@@ -19,6 +19,16 @@ class EncryptRequest(BaseModel):
 
 with open("settings.yaml") as settings_file:
     settings = yaml.safe_load(settings_file)
+
+    path = settings["logging_directory"]
+    does_the_path_exist = os.path.exists(path)
+
+    if does_the_path_exist:
+        logging.info("Directory does already exist !!!!!!!!!!!")
+    elif not does_the_path_exist:
+        os.makedirs(path)
+        logging.info("Directory is now created !!!!!!!!!!!")
+
 main_parameters = {}
 if not settings["openapi_console"]:
     main_parameters["docs_url"] = None
@@ -26,6 +36,21 @@ if not settings["openapi_console"]:
 app = FastAPI(**main_parameters)
 passworder = Passworder()
 
+passworder_logger = logging.getLogger("passworder_logger")
+passworder_logger.setLevel(logging.INFO)
+
+passworder_filehandler = logging.FileHandler("logs/passworder.log")
+passworder_filehandler.setLevel(logging.INFO)
+
+passworder_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+passworder_filehandler.setFormatter(passworder_formatter)
+
+passworder_logger.addHandler(passworder_filehandler)
+
+
+def write_the_log_request_to_the_file_you_have_specified_in_your_python_project_you_just_created(exceptioncode, algorithm, ipadress):
+    passworder_logger.info(f"{exceptioncode} {algorithm} {ipadress}")
+    print("Done logging")
 
 @app.get("/encrypt/generators")
 async def generators_list():
@@ -43,9 +68,11 @@ async def show_version():
         raise HTTPException(status_code=503, detail="Version file missing or not readeable")
 
 @app.post("/encrypt/")
-async def encrypt(encrypt_request: EncryptRequest):
+async def encrypt(encrypt_request: EncryptRequest, request: Request):
+    write_the_log_request_to_the_file_you_have_specified_in_your_python_project_you_just_created(503, encrypt_request.algorithm, request.client.host)
     result = {}
     try:
+
         # Request validation steps..
         if not encrypt_request.cleartext:
             raise HTTPException(status_code=400, detail="Missing cleartext entry to encrypt")
@@ -73,7 +100,9 @@ async def encrypt(encrypt_request: EncryptRequest):
     except Exception as e:
         print(e)
         traceback.print_exc()
+        write_the_log_request_to_the_file_you_have_specified_in_your_python_project_you_just_created(503, encrypt_request.algorithm, request.client.host)
         raise HTTPException(status_code=503, detail=str(e))
+
     finally:
         return result
 
